@@ -239,6 +239,71 @@ void viewSemuaRapih(struct MenuNode* root) {
     printf("------------------------------------------------------\n");
 }
 
+// Fungsi untuk mendaftarkan Admin baru
+void registerAdmin() {
+    char username[50], password[50];
+    FILE *file = fopen("admin.txt", "a"); // Mode 'a' untuk menambahkan data di baris bawah
+
+    if (file == NULL) {
+        printf("Error: Tidak bisa membuka file database admin.\n");
+        return;
+    }
+
+    printf("\n--- REGISTER ADMIN BARU ---\n");
+    printf("Masukkan Username baru: ");
+    scanf(" %[^\n]", username);
+    printf("Masukkan Password baru: ");
+    scanf(" %[^\n]", password);
+
+    // Menyimpan dengan format username,password
+    fprintf(file, "%s,%s\n", username, password);
+    fclose(file);
+
+    printf("Sistem: Akun Admin '%s' berhasil didaftarkan!\n", username);
+}
+
+// Fungsi untuk mengecek kredensial Login Admin
+int loginAdmin() {
+    char inputUser[50], inputPass[50];
+    char fileUser[50], filePass[50];
+    FILE *file = fopen("admin.txt", "r"); // Mode 'r' untuk membaca
+
+    if (file == NULL) {
+        printf("Sistem: Belum ada admin yang terdaftar. Silakan Register terlebih dahulu.\n");
+        return 0; // Gagal login
+    }
+
+    printf("\n--- LOGIN ADMIN ---\n");
+    printf("Username: ");
+    scanf(" %[^\n]", inputUser);
+    printf("Password: ");
+    scanf(" %[^\n]", inputPass);
+
+    char line[150];
+    // Membaca baris demi baris dari admin.txt
+    while (fgets(line, sizeof(line), file)) {
+        // Menghilangkan newline dari file
+        line[strcspn(line, "\r\n")] = 0; 
+        
+        // Memecah teks berdasarkan koma
+        char* tokenUser = strtok(line, ",");
+        char* tokenPass = strtok(NULL, ",");
+
+        if (tokenUser != NULL && tokenPass != NULL) {
+            // Jika username dan password cocok
+            if (strcmp(inputUser, tokenUser) == 0 && strcmp(inputPass, tokenPass) == 0) {
+                fclose(file);
+                printf("Sistem: Login Berhasil! Selamat datang, %s.\n", inputUser);
+                return 1; // 1 berarti True / Berhasil
+            }
+        }
+    }
+
+    fclose(file);
+    printf("Sistem: Login Gagal! Username atau Password salah.\n");
+    return 0; // 0 berarti False / Gagal
+}
+
 // === FUNGSI UTAMA PROGRAM ===
 int main() {
     struct MenuNode* root = NULL;
