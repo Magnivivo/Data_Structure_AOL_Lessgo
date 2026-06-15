@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-// 1. Struktur Data Menu Node (7 Parameter)
+// 1. Struktur Data Menu Node
+
+//Data isi Node menu
 struct MenuNode {
     char id[10];
     char nama[100];
@@ -42,7 +44,7 @@ struct MenuNode* insertMenu(struct MenuNode* root, const char* id, const char* n
     } else if (cmp > 0) {
         root->right = insertMenu(root->right, id, nama, kategori, harga, deskripsi, bahan, variasi);
     } else {
-        printf("Sistem: Menu '%s' sudah terdaftar!\n", nama);
+        printf("Sistem: Menu '%s' sudah ditambahkan!\n", nama);
     }
     return root;
 }
@@ -55,8 +57,8 @@ struct MenuNode* loadDataFromFile(struct MenuNode* root, const char* filename) {
         return root;
     }
 
-    char line[500];
-    fgets(line, sizeof(line), file);
+    char line[500]; 
+    fgets(line, sizeof(line), file); // Skip header CSV
 
     int count = 0;
     while (fgets(line, sizeof(line), file)) {
@@ -98,7 +100,7 @@ void syncDataToFile(struct MenuNode* root, const char* filename) {
     fclose(file);
 }
 
-// 5. Fitur Tampilan Buku Menu Kafe
+// 5. Fitur Tampilan Buku Menu Kafe Lengkap
 void viewKategoriSpesifik(struct MenuNode* root, const char* targetKategori) {
     if (root == NULL) return;
     
@@ -205,6 +207,7 @@ struct MenuNode* deleteMenu(struct MenuNode* root, const char* targetNama) {
             return temp;
         }
         struct MenuNode* temp = findMin(root->right);
+        // Copy seluruh 7 data dari successor
         strcpy(root->id, temp->id);
         strcpy(root->nama, temp->nama);
         strcpy(root->kategori, temp->kategori);
@@ -311,39 +314,17 @@ int main() {
                     printf("\nAKSES DITOLAK! Anda harus Login Admin.\n");
                     break;
                 }
-                
                 printf("\n--- TAMBAH MENU BARU ---\n");
-                printf("[ Panduan Format ID Menu ]\n");
-                printf("- Kopi     : K** (contoh: K11)\n");
-                printf("- Non-Kopi : NK** (contoh: NK11)\n");
-                printf("- Makanan  : M** (contoh: M11)\n");
-                printf("- Snack    : S** (contoh: S11)\n");
-                printf("-----------------------------------------\n");
-                
-                int validID = 0;
-                do {
-                    printf("Masukkan ID        : "); 
-                    scanf(" %[^\n]", inputID); 
-                    
-                    if (strncmp(inputID, "NK", 2) == 0 || 
-                        strncmp(inputID, "K", 1) == 0 || 
-                        strncmp(inputID, "M", 1) == 0 || 
-                        strncmp(inputID, "S", 1) == 0) {
-                        validID = 1; 
-                    } else {
-                        printf(" -> Error: Format ID salah! Gunakan awalan K, NK, M, atau S.\n");
-                    }
-                } while (!validID);
-
+                printf("Masukkan ID        : "); scanf(" %[^\n]", inputID);
                 printf("Masukkan Nama Menu : "); scanf(" %[^\n]", inputNama);
-                printf("Masukkan Kategori (Kopi/Non-Kopi/Makanan/Snack) : "); scanf(" %[^\n]", inputKategori);
+                printf("Masukkan Kategori  : "); scanf(" %[^\n]", inputKategori);
                 printf("Masukkan Harga     : Rp "); scanf("%d", &inputHarga);
-                printf("Masukkan Deskripsi produk   : "); scanf(" %[^\n]", inputDeskripsi);
-                printf("Masukkan Bahan utama produk  : "); scanf(" %[^\n]", inputBahan);
-                printf("Masukkan Variasi (Hot & Ice)/(Hot Only)/(Ice Only)  : "); scanf(" %[^\n]", inputVariasi);
+                printf("Masukkan Variasi   : "); scanf(" %[^\n]", inputVariasi);
+                printf("Masukkan Bahan     : "); scanf(" %[^\n]", inputBahan);
+                printf("Masukkan Deskripsi : "); scanf(" %[^\n]", inputDeskripsi);
                 
                 root = insertMenu(root, inputID, inputNama, inputKategori, inputHarga, inputDeskripsi, inputBahan, inputVariasi);
-                printf("\nSistem: Menu '%s' berhasil didaftarkan!\n", inputNama);
+                printf("\nSistem: Menu baru berhasil didaftarkan!\n");
                 break;
                 
             case 2:
