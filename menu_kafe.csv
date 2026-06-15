@@ -1,15 +1,41 @@
-ID_Menu,Nama_Menu,Kategori,Harga
-M02,A,Makanan,25000
-K01,Americano Dingin,Kopi,18000
-N03,Artisan Tea Chamomile,Non-Kopi,18000
-K02,Caffe Latte,Kopi,22000
-N04,Choco Hazelnut,Non-Kopi,23000
-M01,Cwie Mie Spesial,Makanan,25000
-K03,Es Kopi Susu Aren,Kopi,20000
-S02,Kentang Goreng Keju,Snack,15000
-K04,Kopi Tubruk Lokal,Kopi,12000
-N05,Matcha,Non-Kopi,15000
-N01,Matcha Frappe,Non-Kopi,25000
-S04,Platter Sosis Bawang,Snack,22000
-N02,Red Velvet Latte,Non-Kopi,24000
-S03,Roti Bakar Coklat,Snack,16000
+ID_Menu,Nama_Menu,Kategori,Harga,Deskripsi,Bahan_Dasar,Variasi
+K01,Americano Dingin,Kopi,18000,Kopi hitam murni tanpa gula yang menyegarkan,Espresso & Air Es,Reguler / Large
+K02,Caffe Latte,Kopi,22000,Paduan espresso dengan susu segar yang creamy,Espresso & Fresh Milk,Hot / Ice
+K03,Es Kopi Susu Aren,Kopi,20000,Kopi susu dengan manis legit gula aren asli,Espresso & Susu & Gula Aren,Reguler / Large
+K04,Cappuccino,Kopi,22000,Espresso dengan buih susu tebal yang gurih,Espresso & Foamed Milk,Hot / Ice
+K05,Kopi Tubruk Lokal,Kopi,12000,Kopi hitam tradisional seduh ampas,Biji Kopi Robusta & Air Panas,Panas
+K06,Vanilla Latte,Kopi,24000,Latte lembut dengan sirup vanilla wangi,Espresso & Susu & Vanilla Sirup,Hot / Ice
+K07,Caramel Macchiato,Kopi,26000,Susu vanilla dengan siraman espresso dan karamel,Espresso & Susu & Saus Karamel,Hot / Ice
+K08,Mochaccino,Kopi,25000,Kopi berpadu dengan coklat manis dan susu,Espresso & Coklat & Susu,Hot / Ice
+K09,Cold Brew Original,Kopi,22000,Kopi seduh dingin selama 18 jam yang halus,Biji Kopi Arabica & Air Dingin,Reguler
+K10,Affogato,Kopi,20000,Es krim vanilla disiram dengan espresso panas,Espresso & Vanilla Ice Cream,Reguler
+NK01,Matcha Frappe,Non-Kopi,25000,Teh hijau Jepang diblend dengan es dan susu,Bubuk Matcha & Susu,Ice Only
+NK02,Red Velvet Latte,Non-Kopi,24000,Minuman manis rasa kue red velvet yang creamy,Red Velvet Powder & Susu,Hot / Ice
+NK03,Taro Latte,Non-Kopi,24000,Minuman rasa ubi ungu manis yang unik,Taro Powder & Susu,Hot / Ice
+NK04,Artisan Tea Chamomile,Non-Kopi,18000,Teh bunga chamomile yang menenangkan,Bunga Chamomile & Air Panas,Hot / Ice
+NK05,Choco Hazelnut,Non-Kopi,23000,Susu coklat kental dengan sentuhan kacang hazelnut,Coklat & Susu & Hazelnut Syrup,Hot / Ice
+NK06,Lemon Tea,Non-Kopi,15000,Teh hitam segar dengan perasan lemon asli,Teh Hitam & Lemon,Hot / Ice
+NK07,Lychee Tea,Non-Kopi,18000,Teh melati manis dengan buah leci utuh,Teh Melati & Buah Leci,Ice Only
+NK08,Strawberry Smoothies,Non-Kopi,25000,Jus stroberi blend dengan yogurt yang segar,Stroberi & Yogurt & Susu,Ice Only
+NK09,Thai Tea Authentic,Non-Kopi,18000,Teh tarik khas Thailand yang pekat dan manis,Teh Thailand & Susu Kental Manis,Ice Only
+NK10,Oreo Cookies Cream,Non-Kopi,26000,Susu blend dengan biskuit oreo dan krim,Susu & Biskuit Oreo & Whipped Cream,Ice Only
+M01,Cwie Mie Spesial,Makanan,25000,Mie kenyal dengan taburan ayam cincang dan pangsit,Mie Pangsit & Ayam,Biasa / Pedas
+M02,Nasi Goreng Kampung,Makanan,22000,Nasi goreng bumbu terasi dengan telur dan kerupuk,Nasi & Telur & Bumbu Terasi,Biasa / Pedas
+M03,Spaghetti Bolognese,Makanan,28000,Pasta Italia dengan saus tomat daging cincang,Spaghetti & Saus Daging Tomat,Reguler
+M04,Spaghetti Carbonara,Makanan,30000,Pasta creamy dengan irisan daging asap dan keju,Spaghetti & Susu & Keju & Smoked Beef,Reguler
+M05,Chicken Katsu Curry,Makanan,32000,Nasi dengan ayam katsu renyah dan kuah kari kental,Nasi & Ayam Katsu & Bumbu Kari,Reguler / Pedas
+M06,Rice Bowl Teriyaki,Makanan,28000,Nasi putih dengan irisan ayam bumbu manis gurih,Nasi & Ayam Teriyaki,Reguler
+M07,Nasi Ayam Geprek,Makanan,20000,Ayam goreng tepung digeprek dengan sambal bawang,Nasi & Ayam Krispi & Sambal,Level 1 - 5
+M08,Mie Goreng Jawa,Makanan,22000,Mie goreng bumbu kecap manis dengan suwiran ayam,Mie Telur & Ayam & Sayuran,Biasa / Pedas
+M09,Nasi Gila,Makanan,24000,Nasi putih disiram tumisan sosis bakso pedas manis,Nasi & Sosis & Bakso & Telur,Biasa / Pedas
+M10,Beef Black Pepper,Makanan,35000,Nasi sapi lada hitam dengan paprika,Nasi & Daging Sapi & Saus Lada Hitam,Reguler
+S01,Kentang Goreng Keju,Snack,15000,Kentang goreng renyah dengan saus keju lumer,Kentang & Saus Keju,Reguler
+S02,Roti Bakar Coklat,Snack,16000,Roti bakar tebal dengan olesan coklat lumer,Roti & Selai Coklat,Biasa / Keju
+S03,Platter Sosis Bawang,Snack,22000,Sosis goreng disajikan dengan irisan bawang bombay,Sosis & Bawang Bombay & Saus,Reguler
+S04,Chicken Wings Spicy,Snack,25000,Sayap ayam goreng bumbu pedas manis Korea,Sayap Ayam & Saus Gochujang,Isi 4 / Isi 6
+S05,Pisang Goreng Coklat Keju,Snack,18000,Pisang krispi ditabur parutan keju dan meses,Pisang & Keju & Coklat,Reguler
+S06,Nachos Saus Daging,Snack,24000,Keripik jagung dengan saus keju dan daging sapi,Keripik Nachos & Saus Keju & Daging,Reguler
+S07,Tahu Cabe Garam,Snack,15000,Tahu krispi dipotong dadu ditumis bawang dan cabe,Tahu Bumbu & Cabe & Bawang Putih,Reguler / Pedas
+S08,Onion Rings,Snack,16000,Bawang bombay salut tepung digoreng renyah,Bawang Bombay & Tepung Bumbu,Reguler
+S09,Dimsum Mentai,Snack,22000,Dimsum ayam dikukus dengan topping saus mentai bakar,Ayam & Kulit Pangsit & Saus Mentai,Isi 4
+S10,Jamur Krispi,Snack,14000,Jamur enoki digoreng krispi dengan saus sambal,Jamur Enoki & Tepung Bumbu,Reguler
