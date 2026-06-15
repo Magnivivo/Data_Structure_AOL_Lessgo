@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// 1. Struktur Data Menu Node (Diperbarui dengan 7 Parameter)
+// 1. Struktur Data Menu Node (7 Parameter)
 struct MenuNode {
     char id[10];
     char nama[100];
@@ -55,8 +55,8 @@ struct MenuNode* loadDataFromFile(struct MenuNode* root, const char* filename) {
         return root;
     }
 
-    char line[500]; // Buffer diperbesar karena teks makin panjang
-    fgets(line, sizeof(line), file); // Skip header CSV
+    char line[500];
+    fgets(line, sizeof(line), file);
 
     int count = 0;
     while (fgets(line, sizeof(line), file)) {
@@ -98,7 +98,7 @@ void syncDataToFile(struct MenuNode* root, const char* filename) {
     fclose(file);
 }
 
-// 5. Fitur Tampilan Buku Menu Kafe Lengkap
+// 5. Fitur Tampilan Buku Menu Kafe
 void viewKategoriSpesifik(struct MenuNode* root, const char* targetKategori) {
     if (root == NULL) return;
     
@@ -205,7 +205,6 @@ struct MenuNode* deleteMenu(struct MenuNode* root, const char* targetNama) {
             return temp;
         }
         struct MenuNode* temp = findMin(root->right);
-        // Copy seluruh 7 data dari successor
         strcpy(root->id, temp->id);
         strcpy(root->nama, temp->nama);
         strcpy(root->kategori, temp->kategori);
@@ -312,17 +311,39 @@ int main() {
                     printf("\nAKSES DITOLAK! Anda harus Login Admin.\n");
                     break;
                 }
+                
                 printf("\n--- TAMBAH MENU BARU ---\n");
-                printf("Masukkan ID        : "); scanf(" %[^\n]", inputID);
+                printf("[ Panduan Format ID Menu ]\n");
+                printf("- Kopi     : K** (contoh: K11)\n");
+                printf("- Non-Kopi : NK** (contoh: NK11)\n");
+                printf("- Makanan  : M** (contoh: M11)\n");
+                printf("- Snack    : S** (contoh: S11)\n");
+                printf("-----------------------------------------\n");
+                
+                int validID = 0;
+                do {
+                    printf("Masukkan ID        : "); 
+                    scanf(" %[^\n]", inputID); 
+                    
+                    if (strncmp(inputID, "NK", 2) == 0 || 
+                        strncmp(inputID, "K", 1) == 0 || 
+                        strncmp(inputID, "M", 1) == 0 || 
+                        strncmp(inputID, "S", 1) == 0) {
+                        validID = 1; 
+                    } else {
+                        printf(" -> Error: Format ID salah! Gunakan awalan K, NK, M, atau S.\n");
+                    }
+                } while (!validID);
+
                 printf("Masukkan Nama Menu : "); scanf(" %[^\n]", inputNama);
-                printf("Masukkan Kategori  : "); scanf(" %[^\n]", inputKategori);
+                printf("Masukkan Kategori (Kopi/Non-Kopi/Makanan/Snack) : "); scanf(" %[^\n]", inputKategori);
                 printf("Masukkan Harga     : Rp "); scanf("%d", &inputHarga);
-                printf("Masukkan Variasi   : "); scanf(" %[^\n]", inputVariasi);
-                printf("Masukkan Bahan     : "); scanf(" %[^\n]", inputBahan);
-                printf("Masukkan Deskripsi : "); scanf(" %[^\n]", inputDeskripsi);
+                printf("Masukkan Deskripsi produk   : "); scanf(" %[^\n]", inputDeskripsi);
+                printf("Masukkan Bahan utama produk  : "); scanf(" %[^\n]", inputBahan);
+                printf("Masukkan Variasi (Hot & Ice)/(Hot Only)/(Ice Only)  : "); scanf(" %[^\n]", inputVariasi);
                 
                 root = insertMenu(root, inputID, inputNama, inputKategori, inputHarga, inputDeskripsi, inputBahan, inputVariasi);
-                printf("\nSistem: Menu baru berhasil didaftarkan!\n");
+                printf("\nSistem: Menu '%s' berhasil didaftarkan!\n", inputNama);
                 break;
                 
             case 2:
