@@ -194,49 +194,66 @@ void syncDataToFile(struct MenuNode* root, const char* filename) {
 }
 
 // Fungsi Pembantu: Hanya mencetak menu dengan kategori tertentu
+// 4. Fitur Menampilkan Semua Menu (Format Buku Menu Kafe Lengkap)
 void viewKategoriSpesifik(struct MenuNode* root, const char* targetKategori) {
     if (root == NULL) return;
     
-    // Telusuri cabang kiri (abjad awal)
     viewKategoriSpesifik(root->left, targetKategori);
     
-    // Jika kategori node saat ini cocok dengan target, cetak datanya!
     if (strcmp(root->kategori, targetKategori) == 0) {
-        printf("| %-5s | %-25s | Rp %-7d |\n", root->id, root->nama, root->harga);
+        // Baris 1: Nama dan Harga
+        printf(">> %-35s Rp %d\n", root->nama, root->harga);
+        // Baris 2: Deskripsi Rasa dan Bahan
+        printf("   %s (Bahan: %s)\n", root->deskripsi, root->bahan);
+        // Baris 3: Pilihan Variasi
+        printf("   *Pilihan: %s\n\n", root->variasi);
     }
     
-    // Telusuri cabang kanan (abjad akhir)
     viewKategoriSpesifik(root->right, targetKategori);
 }
 
-// Fungsi Baru untuk Menu 3 (Tampilkan Semua Menu Dikelompokkan)
+void viewKategoriLainnya(struct MenuNode* root) {
+    if (root == NULL) return;
+    
+    viewKategoriLainnya(root->left);
+    
+    if (strcmp(root->kategori, "Kopi") != 0 && strcmp(root->kategori, "Non-Kopi") != 0 && 
+        strcmp(root->kategori, "Makanan") != 0 && strcmp(root->kategori, "Snack") != 0) {
+        
+        printf(">> %-35s Rp %d [Kategori: %s]\n", root->nama, root->harga, root->kategori);
+        printf("   %s (Bahan: %s)\n", root->deskripsi, root->bahan);
+        printf("   *Pilihan: %s\n\n", root->variasi);
+    }
+    
+    viewKategoriLainnya(root->right);
+}
+
 void viewSemuaRapih(struct MenuNode* root) {
     if (root == NULL) {
         printf("Sistem: Data menu masih kosong.\n");
         return;
     }
-
-    printf("\n======================================================\n");
-    printf("                  DAFTAR MENU KAFE                    \n");
-    printf("======================================================\n");
-
-    printf("\n[ KATEGORI: Kopi ]\n");
-    printf("------------------------------------------------------\n");
+    
+    printf("\n====================================================\n");
+    printf("                  BUKU MENU KAFE                    \n");
+    printf("====================================================\n\n");
+    
+    printf("[ KOPI ]\n----------------------------------------------------\n");
     viewKategoriSpesifik(root, "Kopi");
-
-    printf("\n[ KATEGORI: Non-Kopi]\n");
-    printf("------------------------------------------------------\n");
+    
+    printf("[ NON-KOPI ]\n----------------------------------------------------\n");
     viewKategoriSpesifik(root, "Non-Kopi");
-
-    printf("\n[ KATEGORI: Makanan ]\n");
-    printf("------------------------------------------------------\n");
+    
+    printf("[ MAKANAN ]\n----------------------------------------------------\n");
     viewKategoriSpesifik(root, "Makanan");
-
-    printf("\n[ KATEGORI: Snack ]\n");
-    printf("------------------------------------------------------\n");
+    
+    printf("[ SNACK ]\n----------------------------------------------------\n");
     viewKategoriSpesifik(root, "Snack");
     
-    printf("------------------------------------------------------\n");
+    printf("[ LAINNYA ]\n----------------------------------------------------\n");
+    viewKategoriLainnya(root);
+    
+    printf("====================================================\n");
 }
 
 // Fungsi untuk mendaftarkan Admin baru
@@ -308,6 +325,7 @@ int loginAdmin() {
 int main() {
     struct MenuNode* root = NULL;
     int pilihan;
+    int isAdmin = 0; // 0 = Kasir/Tamu, 1 = Admin (Punya Akses Penuh)
     
     char inputID[10], inputNama[100], inputKategori[50];
     int inputHarga;
@@ -315,22 +333,35 @@ int main() {
     printf("=========================================\n");
     printf("   MEMULAI SISTEM MANAJEMEN MENU KAFE    \n");
     printf("=========================================\n");
-    // Otomatis memuat data dari file saat program berjalan
     root = loadDataFromFile(root, "menu_kafe.csv");
-    printf("Tekan ENTER untuk masuk ke menu utama...");
+    printf("Tekan ENTER untuk masuk ke sistem...");
     getchar();
 
     do {
         printf("\n=========================================\n");
         printf("        SISTEM KASIR KAFE (BST)          \n");
         printf("=========================================\n");
-        printf("1. Tambah Menu Baru\n");
-        printf("2. Cari Detail Menu (Search)\n");
+        
+        // Tampilan menu dinamis berdasarkan status login
+        if (isAdmin) {
+            printf("  [ STATUS: ADMIN AKTIF ]\n");
+        } else {
+            printf("  [ STATUS: KASIR/TAMU ]\n");
+        }
+        printf("-----------------------------------------\n");
+        printf("1. Tambah Menu Baru  [Butuh Akses Admin]\n");
+        printf("2. Cari Detail Menu\n");
         printf("3. Tampilkan Semua Menu (A-Z)\n");
-        printf("4. Hapus Menu\n");
-        printf("5. Keluar\n");
+        printf("4. Hapus Menu        [Butuh Akses Admin]\n");
+        
+        if (isAdmin) {
+            printf("8. Logout Admin\n");
+        } else {
+            printf("8. Login / Register Admin\n");
+        }
+        printf("9. Keluar Aplikasi\n");
         printf("=========================================\n");
-        printf("Pilih aksi [1-5]: ");
+        printf("Pilih aksi: ");
         
         if (scanf("%d", &pilihan) != 1) {
             while (getchar() != '\n');
@@ -339,8 +370,13 @@ int main() {
 
         switch (pilihan) {
             case 1:
+                if (!isAdmin) {
+                    printf("\nAKSES DITOLAK! Anda harus Login Admin untuk menambah menu.\n");
+                    break;
+                }
+                // --- KODE TAMBAH MENU YANG LAMA TETAP DI SINI ---
                 printf("\n--- TAMBAH MENU BARU ---\n");
-                printf("Masukkan ID       : ");
+                printf("Masukkan ID  ()     : ");
                 scanf(" %[^\n]", inputID);
                 printf("Masukkan Nama Menu: ");
                 scanf(" %[^\n]", inputNama);
@@ -354,6 +390,7 @@ int main() {
                 break;
                 
             case 2:
+                // --- KODE CARI MENU TETAP DI SINI ---
                 printf("\n--- CARI MENU ---\n");
                 if (root == NULL) {
                     printf("Sistem: Data menu masih kosong.\n");
@@ -365,11 +402,21 @@ int main() {
                 break;
                 
             case 3:
-                // Menggunakan tampilan yang sudah dikelompokkan per kategori
-                viewSemuaRapih(root);
+                // --- KODE VIEW ALL MENU TETAP DI SINI ---
+                printf("\n--- DAFTAR MENU (TERURUT A-Z) ---\n");
+                if (root == NULL) {
+                    printf("Sistem: Data menu masih kosong.\n");
+                } else {
+                    viewSemuaRapih(root); // Menggunakan fungsi grup kategori kalian
+                }
                 break;
                 
             case 4:
+                if (!isAdmin) {
+                    printf("\nAKSES DITOLAK! Anda harus Login Admin untuk menghapus menu.\n");
+                    break;
+                }
+                // --- KODE HAPUS MENU TETAP DI SINI ---
                 printf("\n--- HAPUS MENU ---\n");
                 if (root == NULL) {
                     printf("Sistem: Data menu masih kosong.\n");
@@ -380,9 +427,31 @@ int main() {
                 }
                 break;
                 
-            case 5:
+            case 8:
+                if (isAdmin) {
+                    isAdmin = 0; // Proses Logout
+                    printf("\nSistem: Berhasil Logout. Kembali ke mode Kasir.\n");
+                } else {
+                    // Sub-menu untuk autentikasi
+                    int authPilihan;
+                    printf("\n--- PORTAL ADMIN ---\n");
+                    printf("1. Login\n");
+                    printf("2. Register Admin Baru\n");
+                    printf("Pilih: ");
+                    scanf("%d", &authPilihan);
+                    
+                    if (authPilihan == 1) {
+                        isAdmin = loginAdmin(); // Jika login sukses, isAdmin jadi 1
+                    } else if (authPilihan == 2) {
+                        registerAdmin();
+                    } else {
+                        printf("Sistem: Pilihan tidak valid.\n");
+                    }
+                }
+                break;
+
+            case 9:
                 printf("\n--- MENYIMPAN DATA ---\n");
-                // Sinkronisasi data dari memori (BST) ke file CSV sebelum keluar
                 syncDataToFile(root, "menu_kafe.csv");
                 printf("Terima kasih. Sistem dimatikan.\n");
                 break;
@@ -391,13 +460,13 @@ int main() {
                 if (pilihan != 0) printf("Pilihan tidak valid!\n");
         }
         
-        if (pilihan != 5 && pilihan != 0) {
+        if (pilihan != 9 && pilihan != 0) {
             printf("\nTekan ENTER untuk melanjutkan...");
-            while (getchar() != '\n'); // Membersihkan buffer
-            getchar(); // Menunggu enter
+            while (getchar() != '\n'); 
+            getchar(); 
         }
         
-    } while (pilihan != 5);
+    } while (pilihan != 9);
 
     return 0;
 }
