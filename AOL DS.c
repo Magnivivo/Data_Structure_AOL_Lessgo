@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// 1. Struktur Data Menu Node (7 Parameter)
+// 1. Struktur Data Menu Node
 struct MenuNode {
     char id[10];
     char nama[100];
@@ -42,7 +42,7 @@ struct MenuNode* insertMenu(struct MenuNode* root, const char* id, const char* n
     } else if (cmp > 0) {
         root->right = insertMenu(root->right, id, nama, kategori, harga, deskripsi, bahan, variasi);
     } else {
-        printf("Sistem: Menu '%s' sudah terdaftar!\n", nama);
+        printf("Sistem: Menu '%s' sudah ditambahkan!\n", nama);
     }
     return root;
 }
@@ -55,8 +55,8 @@ struct MenuNode* loadDataFromFile(struct MenuNode* root, const char* filename) {
         return root;
     }
 
-    char line[500];
-    fgets(line, sizeof(line), file);
+    char line[500]; 
+    fgets(line, sizeof(line), file); // Skip header CSV
 
     int count = 0;
     while (fgets(line, sizeof(line), file)) {
@@ -105,7 +105,6 @@ void viewKategoriSpesifik(struct MenuNode* root, const char* targetKategori, int
     viewKategoriSpesifik(root->left, targetKategori, isAdmin);
     
     if (strcmp(root->kategori, targetKategori) == 0) {
-        // Jika Admin, tampilkan ID. Jika bukan, sembunyikan ID.
         if (isAdmin) {
             printf(">> [%-4s] %-30s Rp %d\n", root->id, root->nama, root->harga);
         } else {
@@ -164,11 +163,8 @@ void viewSemuaRapih(struct MenuNode* root, int isAdmin) {
 
 // 6. Fitur Cari Detail Menu (Mendukung Pencarian berdasarkan Nama ATAU ID)
 int searchMenu(struct MenuNode* root, const char* target) {
-    if (root == NULL) {
-        return 0; // Mengembalikan 0 jika mencapai ujung tree dan belum ketemu
-    }
+    if (root == NULL) return 0; 
 
-    // 1. Cek apakah input COCOK dengan Nama Menu ATAU ID Menu
     if (strcmp(target, root->nama) == 0 || strcmp(target, root->id) == 0) {
         printf("\n======= DETAIL MENU DITEMUKAN =======\n");
         printf("ID Menu     : %s\n", root->id);
@@ -180,15 +176,13 @@ int searchMenu(struct MenuNode* root, const char* target) {
         printf("Bahan Dasar : %s\n", root->bahan);
         printf("Deskripsi   : %s\n", root->deskripsi);
         printf("=====================================\n");
-        return 1; // Mengembalikan 1 karena data berhasil ditemukan
+        return 1; 
     }
 
-    // 2. Jika belum ketemu, telusuri cabang kiri dan kanan secara rekursif
-    // Karena target bisa berupa ID, kita harus menyisir kedua cabang jika tidak ketemu leksikografis nama
     int ketemuDiKiri = searchMenu(root->left, target);
-    if (ketemuDiKiri) return 1; // Jika di kiri sudah ketemu, langsung stop dan return
+    if (ketemuDiKiri) return 1; 
 
-    return searchMenu(root->right, target); // Jika tidak, cek cabang kanan
+    return searchMenu(root->right, target); 
 }
 
 // 7. Fitur Hapus Menu
@@ -238,36 +232,31 @@ void registerAdmin() {
 
     printf("\n--- REGISTER ADMIN BARU ---\n");
 
-    // 1. Loop Validasi Username Anti-Duplikat
     do {
-        isDuplicate = 0; // Reset status setiap kali mengulang input
+        isDuplicate = 0; 
         printf("Masukkan Username baru: ");
         scanf(" %[^\n]", username);
 
-        // Buka file mode 'r' (read) untuk mengecek data yang sudah ada
         FILE *fileCek = fopen("admin.txt", "r");
         if (fileCek != NULL) {
             char line[150];
             while (fgets(line, sizeof(line), fileCek)) {
-                line[strcspn(line, "\r\n")] = 0; // Hilangkan enter di akhir baris
-                char* tokenUser = strtok(line, ","); // Ambil username-nya saja
+                line[strcspn(line, "\r\n")] = 0; 
+                char* tokenUser = strtok(line, ","); 
 
-                // Jika username yang diketik sama dengan yang ada di file
                 if (tokenUser != NULL && strcmp(username, tokenUser) == 0) {
                     isDuplicate = 1;
                     printf(" -> Error: Username '%s' sudah terdaftar! Silakan gunakan username lain.\n", username);
-                    break; // Berhenti mencari karena sudah pasti duplikat
+                    break; 
                 }
             }
-            fclose(fileCek); // Tutup file setelah selesai mengecek
+            fclose(fileCek); 
         }
-    } while (isDuplicate); // Ulangi terus jika masih duplikat
+    } while (isDuplicate); 
 
-    // 2. Lanjut input password jika username dipastikan unik
     printf("Masukkan Password baru: ");
     scanf(" %[^\n]", password);
 
-    // 3. Simpan akun baru ke file mode 'a' (append / tambah di bawah)
     FILE *fileSimpan = fopen("admin.txt", "a"); 
     if (fileSimpan == NULL) {
         printf("Error: Tidak bisa membuka file database admin.\n");
@@ -311,54 +300,36 @@ int loginAdmin() {
     return 0; 
 }
 
-// Fungsi pembantu untuk mengecek apakah ID kembar/sudah ada di Tree (Primary Key Validation)
+// Fungsi pembantu: Mengecek apakah ID kembar
 int isIDExist(struct MenuNode* root, const char* targetID) {
-    if (root == NULL) {
-        return 0; // Ujung tree tercapai, ID aman (tidak duplikat)
-    }
+    if (root == NULL) return 0; 
+    if (strcmp(root->id, targetID) == 0) return 1; 
     
-    // Jika ID ditemukan kembar di node saat ini
-    if (strcmp(root->id, targetID) == 0) {
-        return 1; // 1 berarti True (Duplikat ditemukan!)
-    }
-    
-    // Lanjutkan pencarian ke cabang kiri dan kanan
     int ketemuDiKiri = isIDExist(root->left, targetID);
     if (ketemuDiKiri) return 1;
     
     return isIDExist(root->right, targetID);
 }
 
-// Fungsi pembantu untuk mengecek apakah Nama Menu sudah terdaftar (Cegah Duplikat)
+// Fungsi pembantu: Mengecek apakah Nama Menu kembar
 int isNamaExist(struct MenuNode* root, const char* targetNama) {
-    if (root == NULL) {
-        return 0; // Ujung tree tercapai, Nama aman (belum terdaftar)
-    }
+    if (root == NULL) return 0; 
     
     int cmp = strcmp(targetNama, root->nama);
-    if (cmp == 0) {
-        return 1; // 1 berarti True (Nama Duplikat ditemukan!)
-    } else if (cmp < 0) {
-        return isNamaExist(root->left, targetNama); // Cari ke kiri
-    } else {
-        return isNamaExist(root->right, targetNama); // Cari ke kanan
-    }
+    if (cmp == 0) return 1; 
+    else if (cmp < 0) return isNamaExist(root->left, targetNama); 
+    else return isNamaExist(root->right, targetNama); 
 }
 
 // Fungsi pembantu: Mencari Nama Menu jika Admin mengetikkan ID
 const char* findNameByID(struct MenuNode* root, const char* targetID) {
-    if (root == NULL) return NULL; // Jika tidak ketemu
+    if (root == NULL) return NULL; 
 
-    // Jika ID cocok, kembalikan nama menunya
-    if (strcmp(root->id, targetID) == 0) {
-        return root->nama;
-    }
+    if (strcmp(root->id, targetID) == 0) return root->nama;
 
-    // Telusuri cabang kiri
     const char* leftSearch = findNameByID(root->left, targetID);
     if (leftSearch != NULL) return leftSearch;
 
-    // Telusuri cabang kanan
     return findNameByID(root->right, targetID);
 }
 
@@ -402,12 +373,11 @@ int main() {
         }
 
         switch (pilihan) {
-           case 1:
+            case 1:
                 if (!isAdmin) {
                     printf("\nAKSES DITOLAK! Anda harus Login Admin.\n");
                     break;
                 }
-                
                 printf("\n--- TAMBAH MENU BARU ---\n");
                 printf("[ Panduan Format ID Menu ]\n");
                 printf("- Kopi     : K** (contoh: K11)\n");
@@ -416,13 +386,11 @@ int main() {
                 printf("- Snack    : S** (contoh: S11)\n");
                 printf("-----------------------------------------\n");
                 
-                // 1. Loop Validasi ID (Format dan Anti-Duplikat)
                 int validID = 0;
                 do {
                     printf("Masukkan ID        : "); 
                     scanf(" %[^\n]", inputID); 
                     
-                    // Cek format awalan dan Auto-Assign Kategori
                     if (strncmp(inputID, "NK", 2) == 0) {
                         strcpy(inputKategori, "Non-Kopi");
                         validID = 1; 
@@ -439,36 +407,31 @@ int main() {
                         printf(" -> Error: Format ID salah! Gunakan awalan K, NK, M, atau S.\n");
                     }
 
-                    // Jika formatnya sudah benar, pastikan ID tidak kembar di dalam Tree
                     if (validID == 1) {
                         if (isIDExist(root, inputID)) {
                             printf(" -> Error: ID '%s' sudah dipakai oleh menu lain! Silakan gunakan ID berbeda.\n", inputID);
-                            validID = 0; // Gagalkan validasi agar sistem meminta input ulang
+                            validID = 0; 
                         }
                     }
                 } while (!validID);
 
-                // 2. Loop Validasi Nama (Anti-Duplikat)
                 int validNama = 0;
                 do {
                     printf("Masukkan Nama Menu : "); 
                     scanf(" %[^\n]", inputNama);
                     
-                    // Pastikan nama menu belum pernah didaftarkan
                     if (isNamaExist(root, inputNama)) {
                         printf(" -> Error: Menu bernama '%s' sudah ada di sistem! Gunakan nama yang sedikit berbeda (misal: %s Ice).\n", inputNama, inputNama);
                     } else {
-                        validNama = 1; // Nama aman, keluar dari loop
+                        validNama = 1; 
                     }
                 } while (!validNama);
 
-                // 3. Input Data Sisanya
                 printf("Masukkan Harga     : Rp "); scanf("%d", &inputHarga);
                 printf("Masukkan Deskripsi produk   : "); scanf(" %[^\n]", inputDeskripsi);
                 printf("Masukkan Bahan utama produk : "); scanf(" %[^\n]", inputBahan);
                 printf("Masukkan Variasi [JANGAN pakai koma](Contoh: (Hot & Ice)/(Hot Only)/(Ice/Hot)/Level 1-n)  : "); scanf(" %[^\n]", inputVariasi);
                 
-                // 4. Masukkan ke dalam Tree
                 root = insertMenu(root, inputID, inputNama, inputKategori, inputHarga, inputDeskripsi, inputBahan, inputVariasi);
                 
                 printf("\nSistem: Menu '%s' berhasil didaftarkan ke kategori '%s'!\n", inputNama, inputKategori);
@@ -479,15 +442,12 @@ int main() {
                 if (root == NULL) {
                     printf("Sistem: Data menu masih kosong.\n");
                 } else {
-                    // Mengubah instruksi teks agar user tahu bisa menginput dua opsi
                     char inputCari[100];
                     printf("Masukkan ID atau Nama Menu yang dicari: ");
                     scanf(" %[^\n]", inputCari);
                     
-                    // Memanggil fungsi pencarian baru
                     int statusKetemu = searchMenu(root, inputCari);
                     
-                    // Jika sampai akhir tree status tetap 0, tampilkan pesan error
                     if (!statusKetemu) {
                         printf("Sistem: Menu atau ID '%s' tidak ditemukan di seluruh katalog.\n", inputCari);
                     }
@@ -495,7 +455,6 @@ int main() {
                 break;
                 
             case 3:
-                // Melempar status login saat ini ke dalam fungsi
                 viewSemuaRapih(root, isAdmin); 
                 break;
                 
@@ -513,36 +472,28 @@ int main() {
                     printf("Masukkan ID atau Nama Menu yang akan dihapus: ");
                     scanf(" %[^\n]", inputHapus);
 
-                    // Variabel untuk menyimpan nama menu yang fix akan dihapus
                     const char* targetHapus = NULL; 
-
-                    // 1. Cek apakah input adalah ID
                     const char* namaTarget = findNameByID(root, inputHapus);
 
                     if (namaTarget != NULL) {
                         printf("Sistem: Mendeteksi ID '%s' (Menu: %s)\n", inputHapus, namaTarget);
-                        targetHapus = namaTarget; // Set target dari ID
+                        targetHapus = namaTarget; 
                     } 
-                    // 2. Cek apakah input adalah Nama Menu
                     else if (isNamaExist(root, inputHapus)) {
-                        targetHapus = inputHapus; // Set target dari Nama
+                        targetHapus = inputHapus; 
                     } 
-                    // 3. Jika tidak ketemu sama sekali
                     else {
                         printf("Sistem: Menu atau ID '%s' tidak ditemukan untuk dihapus.\n", inputHapus);
                     }
 
-                    // Jika target menu berhasil ditemukan, minta konfirmasi!
                     if (targetHapus != NULL) {
                         char konfirmasi;
                         printf("\n[PERINGATAN] Apakah Anda yakin ingin menghapus '%s' secara permanen? (Y/N): ", targetHapus);
-                        scanf(" %c", &konfirmasi); // Spasi sebelum %c untuk membersihkan sisa enter/newline
+                        scanf(" %c", &konfirmasi); 
 
                         if (konfirmasi == 'Y' || konfirmasi == 'y') {
-                            // Eksekusi penghapusan HANYA JIKA admin menekan Y
                             root = deleteMenu(root, targetHapus);
                         } else {
-                            // Batalkan jika menekan N atau tombol lainnya
                             printf("Sistem: Penghapusan dibatalkan. Data tetap aman.\n");
                         }
                     }
