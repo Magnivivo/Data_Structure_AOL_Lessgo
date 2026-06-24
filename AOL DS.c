@@ -377,12 +377,12 @@ int main() {
             default:
                 if (pilihan != 0) printf("Pilihan tidak valid!\n");
         }
-        if (pilihan != 9 && pilihan != 0) {
+        if (pilihan != 6 && pilihan != 0) {
             printf("\nTekan ENTER untuk melanjutkan...");
             while (getchar() != '\n'); 
             getchar(); 
         }
-    } while (pilihan != 9);
+    } while (pilihan != 6);
 
     return 0;
 }
